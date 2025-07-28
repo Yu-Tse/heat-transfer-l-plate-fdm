@@ -1,152 +1,127 @@
 # Finite‑Difference Analysis of an L‑Shaped Plate
 
-<p align="center">
-  <img src="docs/assets/problem_setup.png" width="450" alt="Problem setup: geometry, BCs & heat flux"/>
-</p>
-
-> **Author**
-> • Code & report — Project members (see `CONTRIBUTORS.md`)
-> • **Analytical derivation of the 17‑node finite‑difference formulas** — *Yu‑Chih Chi (紀詠喆)*, Dept. of Mechanical Engineering, **National Chung Cheng University**
+> **Authors**
+> • Code & report — Project members (see [`CONTRIBUTORS.md`](CONTRIBUTORS.md))
+> • **Analytical derivation of the 17‑node finite‑difference formulas** — *Yu‑Chih Chi (紀詠喆)*, Dept. of Mechanical Engineering, **National Chung Cheng University**
 
 ---
 
-## 1. Problem Statement
+## 1 · Problem statement
 
-| Symbol     | Value         | Description                                         |
-| ---------- | ------------- | --------------------------------------------------- |
-| `L`        | 0.20 m        | Overall plate length                                |
-| `T₀`       | 300 K         | Uniform initial temperature                         |
-| `Tₛ`       | 400 K         | Prescribed temperature on the **west** side (green) |
-| `T_∞`      | 300 K         | Ambient temperature for convection boundaries       |
-| `h`        | 20 W m⁻² K⁻¹  | Convection coefficient                              |
-| $\dot q''$ | 2 000 W m⁻²   | Uniform surface heat flux on the north edge         |
-| `k`        | 15 W m⁻¹ K⁻¹  | Thermal conductivity                                |
-| Δx = Δy    | 5 mm (≤ 5 mm) | Uniform grid size                                   |
+| Symbol                  | Value                              | Description                                         |
+| ----------------------- | ---------------------------------- | --------------------------------------------------- |
+| **L**                   | 0.20 m                             | Overall plate length                                |
+| **T<sub>0</sub>**       | 300 K                              | Uniform initial temperature                         |
+| **T<sub>s</sub>**       | 400 K                              | Prescribed temperature on the **west** side (green) |
+| **T<sub>∞</sub>**       | 300 K                              | Ambient temperature for convection boundaries       |
+| **h**                   | 20 W m<sup>−2</sup> K<sup>−1</sup> | Convection coefficient                              |
+| \$\dot q''\$            | 2 000 W m<sup>−2</sup>             | Uniform heat flux on the north edge                 |
+| **k**                   | 15 W m<sup>−1</sup> K<sup>−1</sup> | Thermal conductivity                                |
+| \$\Delta x = \Delta y\$ | 5 mm                               | Uniform grid size                                   |
 
-Boundary conditions are summarised in the figure above:
-
-* **Green** — constant temperature `Tₛ`
-* **Red arrows** — imposed surface flux $\dot q''$
-* **Blue clouds** — convection (`h, T_∞`)
-* **Hatched faces** — adiabatic (`∂T/∂n = 0`)
-
-The lower‑right quarter (0.1 m × 0.1 m) is removed, giving an L‑shaped domain that is discretised into **41 × 41 nodes** (1 681 in total; 400 lie inside the cut‑out and are therefore ignored).
+The lower‑right quarter (0.1 m × 0.1 m) is removed, giving an **L‑shaped domain** discretised into 41 × 41 nodes (1 681 total; 400 fall inside the cut‑out and are ignored).
 
 ---
 
-## 2. Governing Equation
+## 2 · Governing equation
 
-The transient 2‑D heat‑conduction equation with a volumetric heat source $\dot q'''$ reads
+The transient 2‑D conduction equation with a volumetric source \$\dot q'''\$ is
 
 $$
 \rho C_p\,\frac{\partial T}{\partial t}
-\;=\;k\,\left(\frac{\partial^2 T}{\partial x^2}+\frac{\partial^2 T}{\partial y^2}\right)
-\;\; +\; \dot q''',\qquad (1)
+\;=\;k\,\Bigl(\tfrac{\partial^2 T}{\partial x^2}+\tfrac{\partial^2 T}{\partial y^2}\Bigr)
+\; +\; \dot q'''. \tag{1}
 $$
 
-where material properties are constant and isotropic.  In this project the source term is re‑defined as
-
-$\dot q'''\;=\;\frac{2\,\dot q''}{\Delta x}\,\tag{2}$
-
-to mimic the *effective* volumetric generation used in the MATLAB template.
-
-### 2.1 Non‑dimensional form
-
-Introducing the Fourier number $F_0 = \dfrac{k\,\Delta t}{\rho C_p\,\Delta x^2}$, Eq. (1) is cast into the explicit finite‑difference stencil
+In this project we redefine the source as
 
 $$
-T_{i,j}^{n+1}
-= T_{i,j}^n
-+ F_0\bigl(T_{i+1,j}^n+T_{i-1,j}^n+T_{i,j+1}^n+T_{i,j-1}^n-4T_{i,j}^n\bigr)
-+ \dfrac{\Delta t}{\rho C_p}\,\dot q'''.\tag{3}
+\dot q''' = \frac{2\,\dot q''}{\Delta x}, \tag{2}
 $$
 
-The stability criterion for a square explicit mesh is $F_0 \le 0.25$; here $F_0 \approx 0.097<0.25$, hence the scheme is stable.
+to match the MATLAB template.
+
+### 2.1 Dimensionless explicit stencil
+
+With the Fourier number \$F\_0 = \dfrac{k,\Delta t}{\rho C\_p,\Delta x^2}\$, Eq. (1) becomes
+
+$$
+T_{i,j}^{n+1} = T_{i,j}^n + F_0\Bigl(T_{i+1,j}^n + T_{i-1,j}^n + T_{i,j+1}^n + T_{i,j-1}^n - 4T_{i,j}^n\Bigr) + \frac{\Delta t}{\rho C_p}\,\dot q'''. \tag{3}
+$$
+
+The scheme is stable because \$F\_0 \approx 0.097 < 0.25\$.
 
 ---
 
-## 3. **17‑Node Formulation** (credit: *Yu‑Chih Chi*)
+## 3 · 17‑node formulation  *(Yu‑Chih Chi)*
 
-Because the L‑domain breaks regular connectivity, interior nodes fall into **17 distinct topological types**.  Chi’s derivation applies energy balance to a control volume around each type, leading to the following generic algebraic form
+Removing the quarter forces interior nodes into **17 connectivity types**.  Energy balance on each control volume yields the generic algebraic form
 
-$a_P T_P = \sum a_{nb}\,T_{nb} + b\tag{4}$
+$$
+a_P\,T_P = \sum_{nb} a_{nb}\,T_{nb} + b. \tag{4}
+$$
 
-where `P` is the current node, `nb` its neighbours (`W,E,N,S`), and coefficients `a` & source `b` depend on:
+Full derivation  → [`docs/derivation.pdf`](docs/derivation.pdf).
 
-* Location (interior, boundary, cut‑out interface)
-* Boundary condition (Dirichlet, Neumann/adiabatic, convection)
-* Local heat flux / generation
+| Node ID | Location / BC          | Key coefficients                                                 |
+| ------- | ---------------------- | ---------------------------------------------------------------- |
+| 1       | West + Dirichlet       | \$T\_P = T\_s\$                                                  |
+| 2       | West interior          | \$a\_P=1-4F\_0\$, \$a\_W=a\_E=F\_0\$, \$a\_N=2F\_0\$, \$b=N\_1\$ |
+| …       | …                      | …                                                                |
+| 17      | East convection corner | \$a\_P=1-4F\_0-2BiF\_0\$, \$a\_W=a\_S=2F\_0\$, \$b=2BiF\_0T\_∞\$ |
 
-The full derivation is provided in [`docs/derivation.pdf`](docs/derivation.pdf) ; a condensed table is reproduced below for quick reference.
-
-| Node ID | Location / BC          | Finite‑difference coefficients                               |
-| ------- | ---------------------- | ------------------------------------------------------------ |
-| 1       | West + Dirichlet       | $T_P = T_s$                                                  |
-| 2       | West interior          | `a_P = 1–4F₀`, `a_W = F₀`, `a_E = F₀`, `a_N = 2F₀`, `b = N₁` |
-| …       | …                      | …                                                            |
-| 17      | East convection corner | `a_P = 1–4F₀–2BiF₀`, `a_W = 2F₀`, `a_S = 2F₀`, `b = 2BiF₀T∞` |
-
-*(see full table in the PDF)*
+*(See PDF for the full table.)*
 
 ---
 
-## 4. Code Usage
+## 4 · Running the code
 
 ```bash
 # clone & install deps
-$ git clone https://github.com/your‑org/l‑plate‑fdm.git
-$ cd l‑plate‑fdm
-$ pip install -r requirements.txt  # numpy, matplotlib, pillow
+$ git clone https://github.com/your‑org/heat-transfer-l-plate-fdm.git
+$ cd heat-transfer-l-plate-fdm
+$ pip install -r requirements.txt   # numpy, matplotlib, pillow
 
 # run the solver (≈ 1 min on a laptop)
 $ python src/l_plate_explicit.py
 ```
 
-Outputs:
+Generated assets
 
-* `steady_state.png`   – static 3‑D surface with colour bar
-* `steady_rotation.gif` – 360‑degree rotating view *(embedded below)*
-* `temp_evolution.gif` – 2‑D temperature evolution animation
-
-<p align="center">
-  <img src="output/steady_rotation.gif" width="420" alt="Rotating 3‑D steady‑state temperature"/>
-</p>
+| File                         | Preview                                     |
+| ---------------------------- | ------------------------------------------- |
+| `output/steady_state.png`    | 3‑D surface (static)                        |
+| `output/steady_rotation.gif` | ![rotating gif](output/steady_rotation.gif) |
+| `output/temp_evolution.gif`  | 2‑D transient animation                     |
 
 ---
 
-## 5. Results & Discussion
+## 5 · Results snapshot
 
-| Property                           | Value                              |
-| ---------------------------------- | ---------------------------------- |
-| Steady‑state peak temperature      | **≈ 480 K** at the top‑left corner |
-| Time to steady state (‖ΔT‖<10⁻⁴ K) | \~ 3 900 s                         |
-| Stability check                    | `F0 = 0.0968 < 0.25` ✔︎            |
-
-Key observations:
-
-* The cut‑out corner (node‑9) exhibits the steepest gradient because heat can only leave through two directions.
-* Increasing `k` shortens the transient period, whereas increasing `ρ` or `C_p` delays it (thermal inertia).
-* The explicit scheme is memory‑light (one vector) but bound by the stability limit; a Crank–Nicolson or ADI variant can achieve larger `Δt`.
-
-See the [presentation](docs/HeatTransfer_Final.pptx) for a deeper parametric study.
+| Metric                         | Value                      |
+| ------------------------------ | -------------------------- |
+| Peak steady temperature        | **≈ 480 K** (top‑left)     |
+| Time to steady (‖ΔT‖ < 10⁻⁴ K) | \~3 900 s                  |
+| Stability check                | \$F\_0 = 0.0968 < 0.25\$ ✅ |
 
 ---
 
-## 6. Repository Layout
+## 6 · Repo layout
 
 ```
 ├── docs/
-│   ├── assets/          #   problem_setup.png, node_table.png, …
-│   └── derivation.pdf   # – full 17‑node coefficient derivation (Chi, CCU)
-├── output/              #   generated PNG / GIF after running the solver
+│   ├── assets/ …
+│   └── derivation.pdf
+├── output/              # generated PNG / GIF
 ├── src/
-│   └── l_plate_explicit.py     #   main Python implementation
+│   └── l_plate_explicit.py
+├── CONTRIBUTORS.md
 ├── requirements.txt
 └── README.md
 ```
 
 ---
 
-## 7. License
+## 7 · License
 
-This project is released under the **MIT License**.  Please cite appropriately if you build upon the derivation by *Yu‑Chih Chi (2024)*.
+Released under the **MIT License**.  Cite *Yu‑Chih Chi (2024)* for the node‑derivation if reused.
