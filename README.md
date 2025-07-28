@@ -25,33 +25,73 @@ The lower‑right quarter (0.1 m × 0.1 m) is removed, giving an **L‑shape
 
 ---
 
-## 2 · Governing equation
+# Problem overview
+
+<p align="center">
+  <img src="docs/assets/problem_text.png" width="480" alt="Problem statement"/>
+</p>
+
+<p align="center">
+  <img src="docs/assets/problem_geometry.png" width="420" alt="Boundary‑condition schematic"/>
+</p>
+
+---
+
+## 2 · Governing equation
+
+*(mathematical typesetting now GitHub‑compatible)*
 
 The transient 2‑D conduction equation with a volumetric source \$\dot q'''\$ is
 
 $$
-\rho C_p\,\frac{\partial T}{\partial t}
-\;=\;k\,\Bigl(\tfrac{\partial^2 T}{\partial x^2}+\tfrac{\partial^2 T}{\partial y^2}\Bigr)
-\; +\; \dot q'''. \tag{1}
+\rho C_p\frac{\partial T}{\partial t}
+\;=
+\;k\left(\frac{\partial^2 T}{\partial x^2}
++\frac{\partial^2 T}{\partial y^2}\right)
++\dot q'''. \tag{1}
 $$
 
-In this project we redefine the source as
+We redefine the source term as
 
 $$
-\dot q''' = \frac{2\,\dot q''}{\Delta x}, \tag{2}
+\dot q''' \,=\, \frac{2\,\dot q''}{\Delta x}, \tag{2}
 $$
 
 to match the MATLAB template.
 
-### 2.1 Dimensionless explicit stencil
+### 2.1 Dimensionless explicit stencil
 
-With the Fourier number \$F\_0 = \dfrac{k,\Delta t}{\rho C\_p,\Delta x^2}\$, Eq. (1) becomes
+Using the Fourier number
 
 $$
-T_{i,j}^{n+1} = T_{i,j}^n + F_0\Bigl(T_{i+1,j}^n + T_{i-1,j}^n + T_{i,j+1}^n + T_{i,j-1}^n - 4T_{i,j}^n\Bigr) + \frac{\Delta t}{\rho C_p}\,\dot q'''. \tag{3}
+F_0 \,=\, \frac{k\,\Delta t}{\rho C_p\,\Delta x^{2}},
 $$
 
-The scheme is stable because \$F\_0 \approx 0.097 < 0.25\$.
+Eq. (1) becomes the explicit update rule
+
+$$
+T_{i,j}^{n+1} 
+= T_{i,j}^{n}
++ F_0\left(
+T_{i+1,j}^{n}+T_{i-1,j}^{n}+T_{i,j+1}^{n}+T_{i,j-1}^{n}-4T_{i,j}^{n}
+\right)
++ \frac{\Delta t}{\rho C_p}\,\dot q'''. \tag{3}
+$$
+
+Because \$F\_0 \approx 0.097 < 0.25\$, the explicit scheme is stable for this grid.
+
+---
+
+## 3 · 17‑node formulation *(credit: Yu‑Chih Chi)*
+
+Removing the lower‑right quarter leaves **17 unique node connectivities**.
+Energy balance on each control volume gives the generic discretisation
+
+$$
+a_P\,T_P \;=\; \sum_{nb} a_{nb}\,T_{nb} + b. \tag{4}
+$$
+
+See [`CONTRIBUTORS.md`](CONTRIBUTORS.md) for author roles.
 
 ---
 
