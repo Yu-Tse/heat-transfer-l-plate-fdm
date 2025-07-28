@@ -4,18 +4,6 @@
 > • *Yu‑Chih Chi (紀詠喆)* — derived the 17‑node finite‑difference formulas and built the initial MATLAB prototype.
 > • Current maintainer — ported the solver to Python and added 3‑D/animated visualisation.
 
----
-
-<p align="center">
-  <img src="docs/assets/problem_text.png" width="480" alt="Problem statement"/>
-</p>
-
-<p align="center">
-  <img src="docs/assets/problem_geometry.png" width="420" alt="Boundary‑condition schematic"/>
-</p>
-
----
-
 ## 1 · Problem statement
 
 | Symbol       | Value        | Description                              |
@@ -80,7 +68,8 @@ Run `src/l_plate_explicit.py` (Python 3.8+) to generate:
 
 Sample output:
 
-![rotating‑gif](output/steady_rotation.gif)
+![temp_evolution](https://github.com/user-attachments/assets/4d284041-495e-4094-977d-0965f42ca3ba)
+
 
 ---
 
