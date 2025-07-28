@@ -1,32 +1,5 @@
 # Finite‑Difference Analysis of an L‑Shaped Plate
 
-> **Authors**
-> • Code & report — Project members (see [`CONTRIBUTORS.md`](CONTRIBUTORS.md))
-> • **Analytical derivation of the 17‑node finite‑difference formulas** — *Yu‑Chih Chi (紀詠喆)*, Dept. of Mechanical Engineering, **National Chung Cheng University**
-
----
-
-## 1 · Problem statement
-
-| Symbol                  | Value                              | Description                                         |
-| ----------------------- | ---------------------------------- | --------------------------------------------------- |
-| **L**                   | 0.20 m                             | Overall plate length                                |
-| **T<sub>0</sub>**       | 300 K                              | Uniform initial temperature                         |
-| **T<sub>s</sub>**       | 400 K                              | Prescribed temperature on the **west** side (green) |
-| **T<sub>∞</sub>**       | 300 K                              | Ambient temperature for convection boundaries       |
-| **h**                   | 20 W m<sup>−2</sup> K<sup>−1</sup> | Convection coefficient                              |
-| \$\dot q''\$            | 2 000 W m<sup>−2</sup>             | Uniform heat flux on the north edge                 |
-| **k**                   | 15 W m<sup>−1</sup> K<sup>−1</sup> | Thermal conductivity                                |
-| \$\Delta x = \Delta y\$ | 5 mm                               | Uniform grid size                                   |
-
-<img width="723" height="554" alt="image" src="https://github.com/user-attachments/assets/015c13ec-b1d3-467a-9df3-2ac06ce6f9a3" />
-
-The lower‑right quarter (0.1 m × 0.1 m) is removed, giving an **L‑shaped domain** discretised into 41 × 41 nodes (1 681 total; 400 fall inside the cut‑out and are ignored).
-
----
-
-# Problem overview
-
 <p align="center">
   <img src="docs/assets/problem_text.png" width="480" alt="Problem statement"/>
 </p>
@@ -37,59 +10,74 @@ The lower‑right quarter (0.1 m × 0.1 m) is removed, giving an **L‑shape
 
 ---
 
-## 2 · Governing equation
+## 1 · Problem statement
 
-*(mathematical typesetting now GitHub‑compatible)*
+| Symbol                  | Value                              | Description                                         |
+| ----------------------- | ---------------------------------- | --------------------------------------------------- |
+| **\$L\$**               | 0.20 m                             | Overall plate length                                |
+| **\$T\_{0}\$**          | 300 K                              | Uniform initial temperature                         |
+| **\$T\_{s}\$**          | 400 K                              | Prescribed temperature on the **west** side (green) |
+| **\$T\_{\infty}\$**     | 300 K                              | Ambient temperature for convection boundaries       |
+| **\$h\$**               | 20 W m<sup>−2</sup> K<sup>−1</sup> | Convection coefficient                              |
+| \$\dot q''\$            | 2 000 W m<sup>−2</sup>             | Uniform surface heat flux on the north edge         |
+| **\$k\$**               | 15 W m<sup>−1</sup> K<sup>−1</sup> | Thermal conductivity                                |
+| \$\Delta x = \Delta y\$ | 5 mm                               | Uniform grid spacing (≤ 5 mm)                       |
+
+The lower‑right quarter (0.1 m × 0.1 m) is removed, leaving **1 281 active nodes** out of 1 681 on a 41 × 41 grid.
+
+---
+
+## 2 · Governing equation
 
 The transient 2‑D conduction equation with a volumetric source \$\dot q'''\$ is
 
 $$
-\rho C_p\frac{\partial T}{\partial t}
+\rho C_p \frac{\partial T}{\partial t}
 \;=
-\;k\left(\frac{\partial^2 T}{\partial x^2}
-+\frac{\partial^2 T}{\partial y^2}\right)
+\;k\left(\frac{\partial^2 T}{\partial x^2}+\frac{\partial^2 T}{\partial y^2}\right)
 +\dot q'''. \tag{1}
 $$
 
-We redefine the source term as
+Following the MATLAB template, we reinterpret the source as
 
 $$
-\dot q''' \,=\, \frac{2\,\dot q''}{\Delta x}, \tag{2}
+\dot q''' = \frac{2\,\dot q''}{\Delta x}. \tag{2}
 $$
-
-to match the MATLAB template.
 
 ### 2.1 Dimensionless explicit stencil
 
-Using the Fourier number
+With the Fourier number
 
 $$
-F_0 \,=\, \frac{k\,\Delta t}{\rho C_p\,\Delta x^{2}},
+F_0 = \frac{k\,\Delta t}{\rho C_p\,\Delta x^{2}},
 $$
 
-Eq. (1) becomes the explicit update rule
+Eq. (1) yields the explicit update rule
 
 $$
-T_{i,j}^{n+1} 
+T_{i,j}^{n+1}
 = T_{i,j}^{n}
-+ F_0\left(
-T_{i+1,j}^{n}+T_{i-1,j}^{n}+T_{i,j+1}^{n}+T_{i,j-1}^{n}-4T_{i,j}^{n}
-\right)
++ F_0\left(T_{i+1,j}^{n}+T_{i-1,j}^{n}+T_{i,j+1}^{n}+T_{i,j-1}^{n}-4T_{i,j}^{n}\right)
 + \frac{\Delta t}{\rho C_p}\,\dot q'''. \tag{3}
 $$
 
-Because \$F\_0 \approx 0.097 < 0.25\$, the explicit scheme is stable for this grid.
+Because \$F\_0 \approx 0.097 < 0.25\$, the explicit scheme is unconditionally stable for this mesh.
 
 ---
 
-## 3 · 17‑node formulation *(credit: Yu‑Chih Chi)*
+## 3 · 17‑node formulation *(credit · Yu‑Chih Chi)*
 
-Removing the lower‑right quarter leaves **17 unique node connectivities**.
-Energy balance on each control volume gives the generic discretisation
+Removing the quarter introduces **17 distinct node connectivities**. A control‑volume energy balance for each type gives
 
 $$
-a_P\,T_P \;=\; \sum_{nb} a_{nb}\,T_{nb} + b. \tag{4}
+a_P\,T_P = \sum_{nb} a_{nb}\,T_{nb} + b. \tag{4}
 $$
+
+See [`docs/derivation.pdf`](docs/derivation.pdf) for full coefficients.  Roles are detailed in [`CONTRIBUTORS.md`](CONTRIBUTORS.md).
+
+---
+
+> **Run & results** – animated GIFs and 3‑D plots are generated by `src/l_plate_explicit.py`; see the repository for details.
 
 See [`CONTRIBUTORS.md`](CONTRIBUTORS.md) for author roles.
 
