@@ -19,6 +19,8 @@
 | **k**                   | 15 W m<sup>−1</sup> K<sup>−1</sup> | Thermal conductivity                                |
 | \$\Delta x = \Delta y\$ | 5 mm                               | Uniform grid size                                   |
 
+<img width="723" height="554" alt="image" src="https://github.com/user-attachments/assets/015c13ec-b1d3-467a-9df3-2ac06ce6f9a3" />
+
 The lower‑right quarter (0.1 m × 0.1 m) is removed, giving an **L‑shaped domain** discretised into 41 × 41 nodes (1 681 total; 400 fall inside the cut‑out and are ignored).
 
 ---
