@@ -1,9 +1,10 @@
 # Finite‑Difference Analysis of an L‑Shaped Plate
 
-> **Authors & roles**
- • *Yu‑Chih Chi (紀詠喆)* — derived the 17‑node finite‑difference formulas and built the initial MATLAB prototype.
- • Current maintainer — ported the solver to Python and added 3‑D/animated visualisation.
- • This project was originally completed as a final report for the undergraduate Heat Transfer course at National Chung Cheng University (2023), by Yu-Chih Chi and [Yu-Tse Wu]. It is published here for reference and demonstration purposes.
+> **Authors & roles**  
+> • *Yu‑Chih Chi (紀詠喆)* — derived the 17‑node finite‑difference formulas and built the initial MATLAB prototype.  
+> • Current maintainer — ported the solver to Python and added 3‑D/animated visualisation.  
+> • This project was originally completed as a final report for the undergraduate Heat Transfer course at National Chung Cheng University (2023), by Yu-Chih Chi and [Yu-Tse Wu]. It is published here for reference and demonstration purposes.
+
 
 
 ## 1 · Problem statement
