@@ -3,6 +3,8 @@
 > **Authors & roles**
 > • *Yu‑Chih Chi (紀詠喆)* — derived the 17‑node finite‑difference formulas and built the initial MATLAB prototype.
 > • Current maintainer — ported the solver to Python and added 3‑D/animated visualisation.
+> • This project was originally completed as a final report for the undergraduate Heat Transfer course at National Chung Cheng University (2023), by Yu-Chih Chi and [Yu-Tse Wu]. It is published here for reference and demonstration purposes.
+
 
 ## 1 · Problem statement
 
@@ -20,28 +22,31 @@
 <img width="723" height="554" alt="image" src="https://github.com/user-attachments/assets/4a631b46-1ef8-4bea-bf6a-756a91f41039" />
 
 
-The lower‑right quarter (0.1 m × 0.1 m) is removed, leaving **1 281 active nodes** on a 41 × 41 mesh.
+The lower‑right quarter (0.1 m × 0.1 m) is removed, leaving **1281 active nodes** on a 41 × 41 mesh.
 
 ---
 
 ## 2 · Governing equation (plain‑text blocks for safe rendering)
 
 ```text
+
 (1)  ρ C_p ∂T/∂t  =  k ( ∂²T/∂x² + ∂²T/∂y² ) + q‴
 
       with  q‴  =  2 q″ / Δx          (2)
+
 ```
 
 ### 2.1 Explicit stencil (dimensionless form)
 
 ```text
+
 Fourier number :  F₀ = k Δt / ( ρ C_p Δx² )
 
 Update rule :
-(3)  T_{i,j}^{n+1} = T_{i,j}^n + F₀ ( T_E + T_W + T_N + T_S – 4 T_P )
-                    + ( Δt / ρ C_p ) q‴
-
+(3)  T_{i,j}^{n+1} = T_{i,j}^n + F₀ ( T_E + T_W + T_N + T_S – 4 T_P ) + ( Δt / ρ C_p ) q‴
+                    
 Stability :  F₀ ≈ 0.097  < 0.25   →  stable.
+
 ```
 
 ---
@@ -49,11 +54,13 @@ Stability :  F₀ ≈ 0.097  < 0.25   →  stable.
 ## 3 · 17‑node formulation *(Yu‑Chih Chi)*
 
 ```text
+
 Generic energy balance for any node type :
 (4)  a_P T_P  =  Σ a_nb T_nb  +  b
 
 Seventeen distinct connectivity cases arise due to the L‑shaped cut‑out; their
 coefficients (a_P, a_nb, b) follow Chi’s original derivation.
+
 ```
 
 ---
@@ -73,4 +80,4 @@ Sample output:
 
 ---
 
-Released under the **MIT License**.  If you reuse the 17‑node derivation, please cite *Yu‑Chih Chi, National Chung Cheng University (2024)*.
+Released under the **MIT License**.  If you reuse the 17‑node derivation, please cite *Yu‑Chih Chi, National Chung Cheng University (2023)*.
