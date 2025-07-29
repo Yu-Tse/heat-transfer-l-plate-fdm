@@ -78,7 +78,13 @@ Sample output:
 
 ![temp_evolution](https://github.com/user-attachments/assets/4d284041-495e-4094-977d-0965f42ca3ba)
 
-
 ---
 
 Released under the **MIT License**.  If you reuse the 17‑node derivation, please cite *Yu‑Chih Chi, National Chung Cheng University (2023)*.
+
+## 🙋‍♂️ Author
+
+**Yu-Tse Wu** (吳雨澤)  
+*Master’s Student at the Institute of Innovation and Semiconductor Manufacturing, National Sun Yat-sen University*
+
+GitHub: [@Yu-Tse](https://github.com/Yu-Tse)
